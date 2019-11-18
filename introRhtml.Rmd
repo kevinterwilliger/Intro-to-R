@@ -1,8 +1,8 @@
 ---
-title: "Intro to R for Analytics"
+title: "An Introduction to R"
 author: "Kevin Terwilliger"
-date: "11/20/2019"
-output: ioslides_presentation
+date: "11/17/2019"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -14,15 +14,13 @@ library(MASS)
 set.seed(1)
 ```
 
-## An Introduction to R
-
 R is a language and environment for statistical computing and graphics.
 
 It provides a wide variety of statistical (linear and nonlinear modelling, classical statistical tests, time-series analysis, classification, clustering, …) and graphical techniques, as well as helpful tools for publication.
 
 ## Installing R
 
-Visit this link: https://cloud.r-project.org/ and download the file for your correct operating system.
+Visit this link: https://cloud.r-project.org/ and download the correct file for your operating system (Windows,MacOS,Linux).
 
 Rstudio is a fantastic, free software for programming in R. You can download it here:
 
@@ -39,7 +37,7 @@ head(mtcars)
 ## Math and Symbols
 
 ```{r echo=T}
-a <- 8
+a <- sample(c(1:30),1)
 ## Sample 1 value between 1 and 30
 b = sample(c(1:30),1)
 paste(a,b,sep = ", ")
@@ -68,11 +66,10 @@ list
 as.data.frame(list)
 
 ## This won't work
-# list = list("Column1" = c(1:5),  
+# list = list("Column1" = c(1:5),
 #             "Column2" = sample(c(1:20),size = 6,replace = F))
 # as.data.frame(list)
 ```
-
 
 ## Graphics
 
@@ -85,7 +82,56 @@ plot(x,y,xlab="this is the x-axis",ylab="this is the y-axis",main="Plot of X vs 
 
 ### Data Frames and Indexing
 
-```{r}
-names(Boston)
+```{r echo=T}
+Insurance = Insurance
+nrow(Insurance)
+ncol(Insurance)
+## OR
+dim(Insurance)
+## Print Column Names
+names(Insurance)
+## Same as head(Insurance)
+Insurance[1:5,]
+
+Insurance[1:5,c("Age","Holders","Claims")]
+
+class(Insurance$Holders)
+
+Insurance[1:5,-c(1:(length(Insurance)-2))]
+```
+
+## Writing/Reading Data
+
+```{r echo=T}
+write.csv(cars,file="~/Desktop/cars.csv")
+setwd("~/Desktop/GitHub/Econ490/Report4/")
+getwd()
+songs = read.csv("song_data.csv",
+                 header = T)
+```
+
+## Descriptive Statistics and Regressions
+
+```{r echo=T}
+summary(Boston)
+
+train = sample_frac(Boston,0.7)
+test = setdiff(Boston,train)
+
+fit = lm(medv ~ lstat,data = train)
+summary(fit)
+
+plot(Boston$lstat,Boston$medv)
+```
+
+```{r echo=T}
+predictions = predict(fit,test)
+
+ggplot() +
+  geom_point(aes(x = test$medv, y = predictions),
+             colour = 'blue') +
+  geom_line(aes(x = test$medv, y = test$medv),
+            colour = 'red') + # plotting Y againts itself produces a red 45 degree line 
+  xlab('actual y') + ylab('predicted y')
 ```
 
