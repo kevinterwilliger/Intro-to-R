@@ -1,4 +1,4 @@
- ---
+---
 title: "An Introduction to R"
 author: "Kevin Terwilliger"
 date: "11/17/2019"
@@ -137,7 +137,7 @@ ggplot() +
   xlab('actual y') + ylab('predicted y')
 ```
 
-```{r}
+```{r echo=T}
 ## Multiple Linear Regression
 fit.2var = lm(medv ~ age+lstat,data=train)
 summary(fit.2var)
