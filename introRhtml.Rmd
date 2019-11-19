@@ -1,4 +1,4 @@
----
+ ---
 title: "An Introduction to R"
 author: "Kevin Terwilliger"
 date: "11/17/2019"
@@ -118,10 +118,12 @@ summary(Boston)
 train = sample_frac(Boston,0.7)
 test = setdiff(Boston,train)
 
+## Single Linear Regression
 fit = lm(medv ~ lstat,data = train)
 summary(fit)
 
-plot(Boston$lstat,Boston$medv)
+plot(Boston$lstat,Boston$medv) +
+  abline(fit,lwd=3,col="red")
 ```
 
 ```{r echo=T}
@@ -132,6 +134,46 @@ ggplot() +
              colour = 'blue') +
   geom_line(aes(x = test$medv, y = test$medv),
             colour = 'red') + # plotting Y againts itself produces a red 45 degree line 
+  xlab('actual y') + ylab('predicted y')
+```
+
+```{r}
+## Multiple Linear Regression
+fit.2var = lm(medv ~ age+lstat,data=train)
+summary(fit.2var)
+
+fit.allVars = lm(medv~.,data=train)
+summary(fit.allVars)
+
+pred.2var = predict(fit.2var,test)
+pred.all = predict(fit.allVars,test)
+
+df = data.frame(x = c(1:length(pred.2var)),
+                "2var" = pred.2var,
+                "all" = pred.all)
+
+head(df)
+
+library(reshape2)
+library(dplyr)
+
+melted.df = melt(df,id.vars="x",
+                 variable.name = "Model",
+                 value.name = "Predictions")
+
+melted.df$Model = recode(melted.df$Model,
+                         X2var = "2 Variable Model",
+                         all = "All Variables Model")
+
+head(melted.df)
+
+ggplot(melted.df,aes(x=rep(test$medv,2),y=Predictions,
+                     shape = Model, 
+                     color = Model)) +
+  geom_point() +
+  geom_point() +
+  geom_line(aes(y = rep(test$medv,2)),
+            colour = 'red') +
   xlab('actual y') + ylab('predicted y')
 ```
 
